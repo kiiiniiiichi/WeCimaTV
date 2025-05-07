@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Wecima Tube - TV Navigation Enhancer
+// @name         Wecima Tube - TV Navigation + Adblock
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Enables TV remote navigation (arrow keys, OK button, etc.) on Wecima.tube
+// @version      1.1
+// @description  TV remote navigation + basic ad-blocking for Wecima.tube on smart TVs or desktop browsers.
 // @author       OpenAI
 // @match        *://wecima.tube/*
 // @grant        none
@@ -11,7 +11,7 @@
 (function () {
     'use strict';
 
-    // Inject custom CSS for TV UI
+    // Inject TV-optimized CSS
     const style = document.createElement('style');
     style.textContent = `
         body {
@@ -55,13 +55,48 @@
             color: #fff !important;
         }
 
-        .adsbygoogle, .ad-banner, iframe[src*="ads"] {
+        /* Ad hiding rules */
+        .adsbygoogle,
+        .ad-banner,
+        .ad-container,
+        .ad-slot,
+        .popup-overlay,
+        .popup-ad,
+        iframe[src*="ads"],
+        iframe[src*="doubleclick"],
+        script[src*="ads"],
+        div[id*="ad"],
+        div[class*="ad"] {
             display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
         }
     `;
     document.head.appendChild(style);
 
-    // JavaScript TV remote navigation logic
+    // Basic ad cleanup function
+    function removeAds() {
+        const adSelectors = [
+            'iframe[src*="ads"]',
+            'iframe[src*="doubleclick"]',
+            'script[src*="ads"]',
+            '[id*="ad"]',
+            '[class*="ad"]',
+            '.popup-overlay',
+            '.popup-ad',
+            '.ad-banner',
+            '.adsbygoogle'
+        ];
+        adSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.remove());
+        });
+    }
+
+    // Initial ad cleanup + periodic cleanup
+    setInterval(removeAds, 2000); // Clean every 2 seconds
+
+    // TV remote navigation
     const SELECTORS = 'a, button, .movie, .video-item, [tabindex]:not([tabindex="-1"])';
     let focusables = [];
     let currentIndex = 0;
@@ -112,9 +147,9 @@
         }
     });
 
-    // Initialize focus after DOM is loaded
     document.addEventListener('DOMContentLoaded', () => {
         updateFocusableElements();
         focusCurrent();
+        removeAds();
     });
 })();
