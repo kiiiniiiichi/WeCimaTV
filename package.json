@@ -2,9 +2,9 @@
   "name": "@xHiqhAim/WeCima",
   "appName": "WeCima",
   "version": "1.0",
-  "description": "WeCima with adblocker",
+  "description": "WeCima Website with adblocker",
   "packageType": "mods",
-  "websiteURL": "https://wecima.film/",
+  "websiteURL": "https://wecima.tube/",
   "main": "scripts/userScript.js",
   "author": "xHiqhAim",
   "keys": [
